@@ -3,15 +3,21 @@ document.addEventListener("DOMContentLoaded", () => {
         let resultElement = document.getElementById("result");
 
         if (response) {
-            let message = "No vulnerabilities detected.";
-            let backgroundColor = "green";
+            let message = "Website status unknown.";
+            let backgroundColor = "gray";
 
-            if (response.phishingDetected) {
-                message = "Phishing detected!";
+            if (response.phishingDetected && response.xssDetected) {
+                message = "Website is phished and vulnerable to XSS";
                 backgroundColor = "red";
-            } else if (response.xssDetected) {
-                message = "XSS vulnerability detected!";
+            } else if (response.phishingDetected && !response.xssDetected) {
+                message = "Website is phished and Not vulnerable to XSS";
                 backgroundColor = "red";
+            } else if (!response.phishingDetected && response.xssDetected) {
+                message = "Website is safe and vulnerable to XSS";
+                backgroundColor = "red"; 
+            } else if (!response.phishingDetected && !response.xssDetected) {
+                message = "Website is safe and Not vulnerable to XSS";
+                backgroundColor = "green"; 
             }
 
             resultElement.textContent = message;
