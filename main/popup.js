@@ -7,17 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
             let backgroundColor = "gray";
 
             if (response.phishingDetected && response.xssDetected) {
-                message = "Website is phished and vulnerable to XSS";
+                message = "Website is phished and XSS vulnerability is present";
                 backgroundColor = "red";
             } else if (response.phishingDetected && !response.xssDetected) {
-                message = "Website is phished and Not vulnerable to XSS";
+                message = "Website is phished and XSS vulnerability not present";
                 backgroundColor = "red";
             } else if (!response.phishingDetected && response.xssDetected) {
-                message = "Website is safe and vulnerable to XSS";
-                backgroundColor = "red"; 
+                message = "Website is safe and XSS vulnerability is present";
+                backgroundColor = "red";
             } else if (!response.phishingDetected && !response.xssDetected) {
-                message = "Website is safe and Not vulnerable to XSS";
-                backgroundColor = "green"; 
+                message = "Website is safe and XSS vulnerability not present";
+                backgroundColor = "green";
             }
 
             resultElement.textContent = message;
