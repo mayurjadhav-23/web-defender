@@ -27,6 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 xssStatus.classList.add("correct"); // Add green styling
             }
             resultElement.appendChild(xssStatus);
+
+            // Clickjacking vulnerability check
+            let clickjackingStatus = document.createElement("li");
+            if (response.clickjackingDetected) {
+                clickjackingStatus.textContent = "3. Clickjacking Vulnerability Detected";
+                clickjackingStatus.classList.add("incorrect"); // Add red styling
+            } else {
+                clickjackingStatus.textContent = "3. Website is Not Vulnerable to Clickjacking";
+                clickjackingStatus.classList.add("correct"); // Add green styling
+            }
+            resultElement.appendChild(clickjackingStatus);
         } else {
             // If there was an error retrieving the results
             let errorMessage = document.createElement("li");

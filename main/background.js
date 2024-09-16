@@ -1,29 +1,35 @@
 let xssDetected = false;
 let phishingDetected = false;
+let clickjackingDetected = false;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "xssDetected") {
         xssDetected = true;
-        checkAndShowPopup();
     } else if (request.action === "xssNotDetected") {
         xssDetected = false;
-        checkAndShowPopup(); // Ensure we check if it's safe after updating
     }
 
     if (request.action === "phishingDetected") {
         phishingDetected = true;
-        checkAndShowPopup();
     } else if (request.action === "phishingNotDetected") {
         phishingDetected = false;
-        checkAndShowPopup(); // Ensure we check if it's safe after updating
+    }
+
+    if (request.action === "clickjackingDetected") {
+        clickjackingDetected = true;
+    } else if (request.action === "clickjackingNotDetected") {
+        clickjackingDetected = false;
     }
 
     if (request.action === "popupRequest") {
         sendResponse({
             xssDetected: xssDetected,
-            phishingDetected: phishingDetected
+            phishingDetected: phishingDetected,
+            clickjackingDetected: clickjackingDetected
         });
     }
+
+    checkAndShowPopup();
 });
 
 function checkAndShowPopup() {
@@ -32,30 +38,22 @@ function checkAndShowPopup() {
         chrome.scripting.executeScript({
             target: { tabId: activeTabId },
             func: showPopupOnActiveTab,
-            args: [xssDetected, phishingDetected]
+            args: [xssDetected, phishingDetected, clickjackingDetected]
         });
     });
 }
 
-function showPopupOnActiveTab(xssDetected, phishingDetected) {
-    let message = "Website status unknown.";
-    let backgroundColor = "gray";
+function showPopupOnActiveTab(xssDetected, phishingDetected, clickjackingDetected) {
+    let message = "Website is Safe.";
+    let backgroundColor = "green";
 
-    if (phishingDetected && xssDetected) {
-        message = "Website is phished and XSS vulnerability is present";
+    // If any vulnerability is detected, show a vulnerable message and set the background color to red
+    if (xssDetected || phishingDetected || clickjackingDetected) {
+        message = "Website is vulnerable!";
         backgroundColor = "red";
-    } else if (phishingDetected && !xssDetected) {
-        message = "Website is phished and XSS vulnerability not present";
-        backgroundColor = "red";
-    } else if (!phishingDetected && xssDetected) {
-        message = "Website is safe and XSS vulnerability is present";
-        backgroundColor = "red";
-    } else if (!phishingDetected && !xssDetected) {
-        message = "Website is safe and XSS vulnerability not present";
-        backgroundColor = "green"; // Ensure green is used correctly here
     }
 
-    // Remove any previous popups before showing a new one
+    // Remove previous popup
     let existingPopup = document.querySelector('.extension-popup');
     if (existingPopup) {
         existingPopup.remove();
@@ -63,7 +61,7 @@ function showPopupOnActiveTab(xssDetected, phishingDetected) {
 
     // Create and display the popup
     let popup = document.createElement('div');
-    popup.className = 'extension-popup'; // Add a class to identify this popup
+    popup.className = 'extension-popup';
     popup.style.position = 'fixed';
     popup.style.top = '10px';
     popup.style.right = '10px';

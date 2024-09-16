@@ -1,38 +1,37 @@
 {
-    "manifest_version": 3,
-    "name": "Web Defender",
-    "version": "1.0",
-    "description": "Detects DOM-based XSS vulnerabilities and potential phishing threats.",
-    "permissions": [
-      "activeTab",
-      "scripting",
-      "tabs",
-      "storage"
-    ],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
-      }
-    },
-    "icons": {
+  "manifest_version": 3,
+  "name": "Web Defender",
+  "version": "1.0",
+  "description": "Detects DOM-based XSS vulnerabilities, clickjacking vulnerabilities, and potential phishing threats.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
       "16": "icon.png",
       "48": "icon.png",
       "128": "icon.png"
-    },
-    "host_permissions": [
-      "*://*/*"
-    ],
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["xssDetection.js", "phishingDetection.js"]
-      }
-    ]
-  }
-  
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["xssDetection.js", "phishingDetection.js", "clickDetection.js"]
+    }
+  ]
+}
