@@ -3,28 +3,36 @@ document.addEventListener("DOMContentLoaded", () => {
         let resultElement = document.getElementById("result");
 
         if (response) {
-            let message = "Website status unknown.";
-            let backgroundColor = "gray";
+            // Clear previous results
+            resultElement.innerHTML = '';
 
-            if (response.phishingDetected && response.xssDetected) {
-                message = "Website is phished and XSS vulnerability is present";
-                backgroundColor = "red";
-            } else if (response.phishingDetected && !response.xssDetected) {
-                message = "Website is phished and XSS vulnerability not present";
-                backgroundColor = "red";
-            } else if (!response.phishingDetected && response.xssDetected) {
-                message = "Website is safe and XSS vulnerability is present";
-                backgroundColor = "red";
-            } else if (!response.phishingDetected && !response.xssDetected) {
-                message = "Website is safe and XSS vulnerability not present";
-                backgroundColor = "green";
+            // Phishing check
+            let phishingStatus = document.createElement("li");
+            if (response.phishingDetected) {
+                phishingStatus.textContent = "1. Website is Phished";
+                phishingStatus.classList.add("incorrect"); // Add red styling
+            } else {
+                phishingStatus.textContent = "1. Website is Not Phished";
+                phishingStatus.classList.add("correct"); // Add green styling
             }
+            resultElement.appendChild(phishingStatus);
 
-            resultElement.textContent = message;
-            resultElement.style.color = backgroundColor;
+            // XSS vulnerability check
+            let xssStatus = document.createElement("li");
+            if (response.xssDetected) {
+                xssStatus.textContent = "2. XSS Vulnerability Detected";
+                xssStatus.classList.add("incorrect"); // Add red styling
+            } else {
+                xssStatus.textContent = "2. Website is Not Vulnerable to XSS";
+                xssStatus.classList.add("correct"); // Add green styling
+            }
+            resultElement.appendChild(xssStatus);
         } else {
-            resultElement.textContent = "Error: Could not retrieve results.";
-            resultElement.style.color = "orange";
+            // If there was an error retrieving the results
+            let errorMessage = document.createElement("li");
+            errorMessage.textContent = "Error: Could not retrieve results.";
+            errorMessage.style.color = "orange";
+            resultElement.appendChild(errorMessage);
         }
     });
 });

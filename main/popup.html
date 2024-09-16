@@ -8,6 +8,23 @@
       width: 300px;
       padding: 10px;
     }
+    h3 {
+      margin-bottom: 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .correct {
+      color: green; /* Green color for safe status */
+    }
+    .incorrect {
+      color: red; /* Red color for warnings */
+    }
     #result {
       font-weight: bold;
     }
@@ -15,7 +32,9 @@
 </head>
 <body>
   <h3>Web Defender</h3>
-  <p id="result">Running security checks...</p>
+  <ul id="result">
+    <!-- Dynamic results will appear here -->
+  </ul>
 
   <script src="popup.js"></script>
 </body>
