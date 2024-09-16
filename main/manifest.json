@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Security Detector: XSS and Phishing",
+    "name": "Web Defender",
     "version": "1.0",
     "description": "Detects DOM-based XSS vulnerabilities and potential phishing threats.",
     "permissions": [
