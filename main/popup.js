@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // XSS vulnerability check
             let xssStatus = document.createElement("li");
             if (response.xssDetected) {
-                xssStatus.textContent = "2. XSS Vulnerability Detected";
+                xssStatus.textContent = "2. DOM-XSS Vulnerability Detected";
                 xssStatus.classList.add("incorrect"); // Add red styling
             } else {
-                xssStatus.textContent = "2. Website is Not Vulnerable to XSS";
+                xssStatus.textContent = "2. Website is Not Vulnerable to DOM-XSS";
                 xssStatus.classList.add("correct"); // Add green styling
             }
             resultElement.appendChild(xssStatus);
