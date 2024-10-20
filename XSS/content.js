@@ -41,11 +41,11 @@ async function checkDomXss() {
     for (let payload of xssPayloads) {
         try {
             let alertTriggered = false;
-            let domModified = false;
+            let domContainsCustomMessage = false;
 
             // Override alert function to detect if XSS executes
             window.alert = function (message) {
-                if (message.includes('XSS')) {
+                if (message.includes('XSS')) {  // Look for the specific 'XSS' keyword in the alert
                     alertTriggered = true;
                 }
             };
@@ -54,15 +54,15 @@ async function checkDomXss() {
             let testUrl = originalUrl + "#" + payload;
             window.history.pushState("", "", testUrl);
 
-            // Inject the payload into the DOM to check for XSS
-            domModified = document.body.innerHTML.includes('XSS') || document.body.innerHTML.includes('<script>');
+            // Inject the payload into the DOM and check if it contains the custom message (e.g., 'XSS')
+            domContainsCustomMessage = document.body.innerHTML.includes("XSS");
 
             // Revert the URL back to the original after testing the payload
             window.history.pushState("", "", originalUrl);
 
-            // If any XSS is detected, stop testing further payloads
-            if (alertTriggered || domModified) {
-                return true;  // XSS detected
+            // If any XSS is detected or the custom message is found, stop testing further payloads
+            if (alertTriggered || domContainsCustomMessage) {
+                return true;  // XSS detected, custom message found
             }
         } catch (error) {
             console.error(`Error testing payload: ${payload}`, error);
@@ -72,7 +72,7 @@ async function checkDomXss() {
     // Ensure the URL is restored to the original after all tests
     window.history.pushState("", "", originalUrl);
 
-    return false;  // No XSS detected
+    return false;  // No XSS detected or custom message not found
 }
 
 // Function to create and show the popup

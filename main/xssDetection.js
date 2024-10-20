@@ -41,7 +41,7 @@ async function checkDomXss() {
     for (let payload of xssPayloads) {
         try {
             let alertTriggered = false;
-            let domModified = false;
+            let domContainsPayload = false;
 
             // Override alert function to detect if XSS executes
             window.alert = function (message) {
@@ -54,16 +54,16 @@ async function checkDomXss() {
             let testUrl = originalUrl + "#" + payload;
             window.history.pushState("", "", testUrl);
 
-            // Inject the payload into the DOM to check for XSS
-            domModified = document.body.innerHTML.includes('XSS') || document.body.innerHTML.includes('<script>');
+            // Inject the payload into the DOM and check if it contains the payload or custom message (e.g., 'XSS')
+            domContainsPayload = document.body.innerHTML.includes(payload) || document.body.innerHTML.includes("XSS");
 
             // Revert the URL back to the original after testing the payload
             window.history.pushState("", "", originalUrl);
 
-            // If any XSS is detected, stop testing further payloads
-            if (alertTriggered || domModified) {
+            // If any XSS is detected or the DOM contains the payload, stop testing further payloads
+            if (alertTriggered || domContainsPayload) {
                 chrome.runtime.sendMessage({ action: "xssDetected" });
-                return true;  // XSS detected
+                return true;  // XSS detected or custom message found
             }
         } catch (error) {
             console.error(`Error testing payload: ${payload}`, error);
@@ -74,7 +74,7 @@ async function checkDomXss() {
     window.history.pushState("", "", originalUrl);
 
     chrome.runtime.sendMessage({ action: "xssNotDetected" });
-    return false;  // No XSS detected
+    return false;  // No XSS detected or custom message not found
 }
 
 // Automatically check for DOM-based XSS when the page loads
